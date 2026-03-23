@@ -1,0 +1,10 @@
+name: bear-cud-frontend-project # <--- Уникальное имя!
+
+services:
+    web:
+        build: .
+        container_name: bear-cud_frontend
+        restart: always
+        ports:
+            # Слева порт хоста (4000), Справа порт внутри (80)
+            - "127.0.0.1:4000:80"

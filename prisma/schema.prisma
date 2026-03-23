@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id         String    @id @default(uuid())
+  name       String
+  role       String
+  login      String?   @unique
+  password   String?
+  isBlocked  Boolean   @default(false)
+  hourlyRate Float?    @default(0)
+  workLogs   WorkLog[]
+  payouts    Payout[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model CatalogItem {
+  id            String   @id @default(uuid())
+  name          String
+  role          String
+  standardHours Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model WorkLog {
+  id          String           @id @default(uuid())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id])
+  date        DateTime
+  totalEarned Float
+  items       WorkLogItem[]
+  expenses    WorkLogExpense[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model WorkLogItem {
+  id            String   @id @default(uuid())
+  workLogId     String
+  workLog       WorkLog  @relation(fields: [workLogId], references: [id], onDelete: Cascade)
+  itemId        String
+  name          String
+  qty           Int
+  standardHours Float
+  total         Float
+}
+
+model WorkLogExpense {
+  id        String   @id @default(uuid())
+  workLogId String
+  workLog   WorkLog  @relation(fields: [workLogId], references: [id], onDelete: Cascade)
+  name      String
+  amount    Float
+}
+
+model Payout {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  date      DateTime
+  amount    Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
