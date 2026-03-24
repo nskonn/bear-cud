@@ -37,13 +37,15 @@ export const WorkerDashboard = ({ onAddClick, onEditClick }: WorkerDashboardProp
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-br from-amber-600 to-amber-800 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
-        <div className="relative z-10">
-          <p className="text-amber-200 text-sm font-medium mb-1">Доступно к выплате</p>
-          <h2 className="text-4xl font-bold">{stats.balance} ₽</h2>
+        <div className={`bg-gradient-to-br ${stats.balance < 0 ? 'from-emerald-600 to-emerald-800' : 'from-amber-600 to-amber-800'} rounded-2xl p-6 text-white shadow-lg relative overflow-hidden`}>
+            <div className="relative z-10">
+                <p className={`${stats.balance < 0 ? 'text-emerald-200' : 'text-amber-200'} text-sm font-medium mb-1`}>
+                    {stats.balance < 0 ? 'Текущий аванс' : 'Доступно к выплате'}
+                </p>
+                <h2 className="text-4xl font-bold">{stats.balance < 0 ? Math.abs(stats.balance) : stats.balance} ₽</h2>
+            </div>
+            <DollarSign className={`absolute -right-4 -bottom-4 ${stats.balance < 0 ? 'text-emerald-500' : 'text-amber-500'} opacity-30 w-32 h-32`} />
         </div>
-        <DollarSign className="absolute -right-4 -bottom-4 text-amber-500 opacity-30 w-32 h-32" />
-      </div>
 
       <div className="grid grid-cols-3 gap-3">
         <StatCard title="За день" value={stats.today} icon={<Calendar size={16}/>} />

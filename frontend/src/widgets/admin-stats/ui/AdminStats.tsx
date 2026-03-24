@@ -189,8 +189,8 @@ export const AdminStats = () => {
                         {group.label}
                       </th>
                     ))}
-                    
-                    <th rowSpan={2} className="p-4 font-semibold text-stone-600 text-right bg-amber-50 sticky right-[120px] md:static z-10 align-bottom">К выплате</th>
+
+                    <th rowSpan={2} className="p-4 font-semibold text-stone-600 text-right bg-amber-50 sticky right-[120px] md:static z-10 align-bottom">Баланс</th>
                     <th rowSpan={2} className="p-4 font-semibold text-stone-600 text-center sticky right-0 bg-stone-50 z-20 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] md:static md:shadow-none md:z-auto align-bottom">Действие</th>
                   </tr>
                   <tr className="bg-stone-50 border-b border-stone-200">
@@ -238,13 +238,12 @@ export const AdminStats = () => {
                         </td>
                       ))}
 
-                      <td className="p-4 text-right font-bold text-amber-700 bg-amber-50/30 sticky right-[120px] md:static group-hover:bg-amber-100/50 transition-colors z-10">
+                      <td className={`p-4 text-right font-bold ${u.stats.balance < 0 ? 'text-emerald-600' : 'text-amber-700'} bg-amber-50/30 sticky right-[120px] md:static group-hover:bg-amber-100/50 transition-colors z-10`}>
                         {u.stats.balance} ₽
                       </td>
                       <td className="p-4 text-center sticky right-0 bg-white group-hover:bg-stone-50 z-10 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] md:static md:shadow-none md:bg-transparent md:z-auto">
                         <button 
                           onClick={() => setSelectedUser(u)}
-                          disabled={u.stats.balance <= 0}
                           className="px-4 py-2 bg-stone-900 text-white text-sm font-medium rounded-lg hover:bg-stone-800 disabled:opacity-30 disabled:hover:bg-stone-900 transition inline-flex items-center whitespace-nowrap"
                         >
                           <HandCoins size={16} className="mr-1" /> Выплатить
@@ -287,8 +286,8 @@ export const AdminStats = () => {
                         {group.label}
                       </th>
                     ))}
-                    
-                    <th rowSpan={2} className="p-4 font-semibold text-stone-600 text-right bg-amber-50 sticky right-0 md:static z-20 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] md:shadow-none md:z-auto align-bottom">Текущий остаток</th>
+
+                    <th rowSpan={2} className="p-4 font-semibold text-stone-600 text-right bg-amber-50 sticky right-0 md:static z-20 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] md:shadow-none md:z-auto align-bottom">Баланс</th>
                   </tr>
                   <tr className="bg-stone-50 border-b border-stone-200">
                     {columns[payoutTableFilter].map(colKey => (
@@ -327,7 +326,7 @@ export const AdminStats = () => {
                         </td>
                       ))}
 
-                      <td className="p-4 text-right font-bold text-amber-700 bg-amber-50/30 sticky right-0 md:static group-hover:bg-amber-100/50 transition-colors z-10 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] md:shadow-none">
+                      <td className={`p-4 text-right font-bold ${u.stats.balance < 0 ? 'text-emerald-600' : 'text-amber-700'} bg-amber-50/30 sticky right-0 md:static group-hover:bg-amber-100/50 transition-colors z-10 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] md:shadow-none`}>
                         {u.stats.balance} ₽
                       </td>
                     </tr>
