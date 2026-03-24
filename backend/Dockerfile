@@ -6,11 +6,14 @@ WORKDIR /app
 # Устанавливаем openssl
 RUN apt-get update && apt-get install -y openssl
 
-# Копируем package.json и принудительно ставим ВСЕ зависимости
+# Копируем package.json и ставим зависимости
 COPY package*.json ./
-RUN npm install --include=dev
+RUN npm install
 
-# БРОНЕБОЙНОЕ КОПИРОВАНИЕ: копируем только код, обходя node_modules
+# ПРИНУДИТЕЛЬНО ставим tsup и typescript глобально в систему
+RUN npm install -g typescript tsup
+
+# Копируем исходники
 COPY src ./src
 COPY prisma ./prisma
 COPY tsconfig*.json ./
