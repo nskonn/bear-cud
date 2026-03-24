@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useUsers, useAddUser, useUpdateUser, useDeleteUser } from '@/src/entities/user/model/queries';
-import { useRoles } from '@/src/entities/role/model/queries';
+import { useRoles, useAddRole, useUpdateRole  } from '@/src/entities/role/model/queries';
 import { User } from '@/src/shared/types';
 import { Plus, Edit2, Trash2, Lock, Unlock, Save, X } from 'lucide-react';
+import {RoleSelect} from "@/src/shared/ui/RoleSelect.tsx";
 
 export const AdminWorkers = () => {
   const { data: users = [], isLoading } = useUsers();
@@ -10,6 +11,8 @@ export const AdminWorkers = () => {
   const { mutateAsync: addUser } = useAddUser();
   const { mutateAsync: updateUser } = useUpdateUser();
   const { mutateAsync: deleteUser } = useDeleteUser();
+  const { mutateAsync: addRole } = useAddRole();
+  const { mutateAsync: updateRole } = useUpdateRole();
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -113,13 +116,13 @@ export const AdminWorkers = () => {
                   />
                 </td>
                 <td className="p-4">
-                  <select
-                    value={editForm.role || ''}
-                    onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
-                    className="w-full p-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white"
-                  >
-                    {roles.map(r => <option key={r} value={r}>{r}</option>)}
-                  </select>
+                  <RoleSelect
+                      value={editForm.role || ''}
+                      onChange={(role) => setEditForm({ ...editForm, role })}
+                      roles={roles}
+                      onAddRole={addRole}
+                      onEditRole={(oldRole, newRole) => updateRole({ oldRole, newRole })}
+                  />
                 </td>
                 <td className="p-4">
                   <input
@@ -179,13 +182,13 @@ export const AdminWorkers = () => {
                           Администратор
                         </span>
                       ) : (
-                      <select
-                        value={editForm.role || ''}
-                        onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
-                        className="w-full p-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white"
-                      >
-                        {roles.map(r => <option key={r} value={r}>{r}</option>)}
-                      </select>
+                          <RoleSelect
+                              value={editForm.role || ''}
+                              onChange={(role) => setEditForm({ ...editForm, role })}
+                              roles={roles}
+                              onAddRole={addRole}
+                              onEditRole={(oldRole, newRole) => updateRole({ oldRole, newRole })}
+                          />
                       )}
                     </td>
                     <td className="p-4">
