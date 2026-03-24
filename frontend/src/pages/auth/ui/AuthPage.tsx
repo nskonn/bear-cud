@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { User, Shield, Lock } from 'lucide-react';
 import { useAuth } from '@/src/app/providers/AuthProvider';
 import { useUsers } from '@/src/entities/user/model/queries';
+import {toast} from "sonner";
 
 export const AuthPage = () => {
   const { data: users = [] } = useUsers();
@@ -16,12 +17,12 @@ export const AuthPage = () => {
     const user = users.find(u => u.login === loginInput.trim() && u.password === passwordInput.trim());
     
     if (!user) {
-      alert('Неверный логин или пароль');
+      toast.error('Неверный логин или пароль');
       return;
     }
 
     if (user.isBlocked) {
-      alert('Ваш аккаунт заблокирован. Обратитесь к администратору.');
+      toast.error('Ваш аккаунт заблокирован. Обратитесь к администратору.');
       return;
     }
     
@@ -39,7 +40,7 @@ export const AuthPage = () => {
           <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 text-amber-700 shadow-inner">
             <Shield size={32} />
           </div>
-          <h1 className="text-2xl font-bold text-white">ДревПром Учет</h1>
+          <h1 className="text-2xl font-bold text-white">Bear cud</h1>
           <p className="text-amber-200 text-sm mt-1">Система учета выработки</p>
         </div>
         
@@ -79,15 +80,6 @@ export const AuthPage = () => {
           >
             Войти в систему
           </button>
-
-          <div className="pt-6 border-t border-stone-100 mt-6">
-            <button 
-              onClick={handleAdminLogin}
-              className="w-full bg-stone-800 text-white font-medium py-2 rounded-xl text-sm hover:bg-stone-900 transition flex items-center justify-center"
-            >
-              <Shield size={16} className="mr-2" /> Войти как Администратор
-            </button>
-          </div>
         </div>
       </div>
     </div>

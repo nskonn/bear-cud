@@ -1,20 +1,47 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Run and deploy bear-cud
 
-# Run and deploy your AI Studio app
+Репозиторий содержит два изолированных проекта: `frontend/` для React/Vite-приложения и `backend/` для Express + Prisma API. Для Git это всё ещё один репозиторий, но каждое приложение живёт в своей собственной директории с собственным `package.json`, `tsconfig.json` и набором зависимостей.
 
-This contains everything you need to run your app locally.
+## Структура
 
-View your app in AI Studio: https://ai.studio/apps/523b09e1-6aac-46ef-aaf5-a2d2be79f601
+- `frontend/` содержит React-приложение на Vite и Tailwind. В режиме разработки оно проксирует запросы на `/api` к бекенду.
+- `backend/` содержит Express-сервер, Prisma и SQLite-подсистему. В режиме `NODE_ENV=production` он отдаёт собранный фронтенд из `../frontend/dist`.
+- `Dockerfile` и `docker-compose.yaml` собирают фронтенд-часть (и могут работать вместе с API-контейнером, если потребуется).
 
-## Run Locally
+## Запуск локально
 
-**Prerequisites:**  Node.js
+### Backend
+1. `cd backend`
+2. `npm install`
+3. Скопируйте `.env.example` в `.env` и, если нужно, новые значения (`DATABASE_URL`, `PORT`).
+4. `npm run dev`
 
+### Frontend
+1. `cd frontend`
+2. `npm install`
+3. При необходимости обновите `VITE_API_HOST` в `.env` (по умолчанию `https://api.bear-cud.ru`, в деве — `http://localhost:4000`). Переменная используется в прокси `/api`.
+4. `npm run dev`
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Фронтенд запустится на `http://localhost:3000`, а бекенд на `http://localhost:4000`. Вызовы из браузера к `/api/*` автоматически проксируются на API.
+
+## Сборка и продакшен
+
+1. В `frontend` выполните `npm run build` — собранные файлы попадут в `frontend/dist`.
+2. В `backend` выполните `npm run build`, а после `NODE_ENV=production npm run start`. В этом режиме сервер отдаёт статику из `../frontend/dist` и обслуживает API.
+3. При необходимости используйте `backend/prisma` и `npm run prisma:push` для синхронизации схемы с базой.
+
+## Docker и деплой
+
+- `Dockerfile` билдит `frontend` и копирует `dist` в nginx-контейнер, а `nginx.conf` уже настроен на SPA.
+- `docker-compose.yaml` можно развить, чтобы отдельно запускать контейнер с API (например, добавив сервис из `backend`).
+- `deploy.sh` выполняет `docker compose up --build`, поэтому перед деплоем убедитесь, что `frontend` собирается независимо.
+
+## Prisma
+
+Схема лежит в `backend/prisma/schema.prisma` и использует SQL (`dev.db` внутри той же папки). Для миграций:
+
+```bash
+cd backend
+npx prisma generate
+npx prisma db push
+```

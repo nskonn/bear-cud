@@ -1,10 +1,45 @@
-name: bear-cud-frontend-project # <--- Уникальное имя!
+# docker-compose.yml
+version: '3.8'
 
 services:
-    web:
-        build: .
-        container_name: bear-cud_frontend
-        restart: always
+    db:
+        image: postgres:15-alpine
+        container_name: bear_cud_db
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: bear_cud_admin
+            POSTGRES_PASSWORD: 123456qwerty
+            POSTGRES_DB: bear_cud_db
         ports:
-            # Слева порт хоста (4000), Справа порт внутри (80)
-            - "127.0.0.1:4000:80"
+            - "5432:5432" # Порт открыт для подключения из DBeaver/DataGrip
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+
+    backend:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        container_name: bear_cud_backend
+        restart: unless-stopped
+        depends_on:
+            - db
+        environment:
+            # Формируем URL для Prisma из тех же переменных
+            DATABASE_URL: "postgresql://bear_cud_admin:123456qwerty@db:5432/bear_cud_db?schema=public"
+            PORT: 4000
+        ports:
+            - "4000:4000"
+
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        container_name: bear_cud_frontend
+        restart: unless-stopped
+        depends_on:
+            - backend
+        ports:
+            - "80:80" # Сайт будет доступен по IP-адресу сервера без указания порта
+
+volumes:
+    pgdata:

@@ -174,6 +174,11 @@ export const AdminWorkers = () => {
                       />
                     </td>
                     <td className="p-4">
+                      {user.role === 'admin' ? (
+                          <span className="px-2.5 py-1 bg-stone-800 text-white rounded-md text-sm border border-stone-700">
+                          Администратор
+                        </span>
+                      ) : (
                       <select
                         value={editForm.role || ''}
                         onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
@@ -181,6 +186,7 @@ export const AdminWorkers = () => {
                       >
                         {roles.map(r => <option key={r} value={r}>{r}</option>)}
                       </select>
+                      )}
                     </td>
                     <td className="p-4">
                       <input
@@ -221,9 +227,15 @@ export const AdminWorkers = () => {
                   <>
                     <td className="p-4 font-medium text-stone-800">{user.name}</td>
                     <td className="p-4 text-stone-600">
+                      {user.role === 'admin' ? (
+                          <span className="px-2.5 py-1 bg-stone-800 text-white rounded-md text-sm border border-stone-700">
+                          Администратор
+                        </span>
+                      ) : (
                       <span className="px-2.5 py-1 bg-stone-100 text-stone-700 rounded-md text-sm border border-stone-200">
                         {user.role}
                       </span>
+                      )}
                     </td>
                     <td className="p-4 text-stone-600">{user.login || <span className="text-stone-400 italic">Нет</span>}</td>
                     <td className="p-4 text-stone-600">{user.password || <span className="text-stone-400 italic">Нет</span>}</td>
