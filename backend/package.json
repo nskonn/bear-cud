@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx src/server.ts",
-    "build": "tsc --project tsconfig.build.json",
+    "build": "npx tsup src/server.ts --format esm --clean",
     "start": "NODE_ENV=production node dist/server.js",
     "lint": "tsc --noEmit",
     "prisma:generate": "prisma generate",
