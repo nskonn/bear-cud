@@ -3,17 +3,19 @@ FROM node:20-bookworm-slim AS builder
 
 WORKDIR /app
 
-# Устанавливаем openssl (для Debian-систем)
+# Устанавливаем openssl
 RUN apt-get update && apt-get install -y openssl
 
-# Копируем package.json и устанавливаем зависимости
+# Копируем package.json и принудительно ставим ВСЕ зависимости
 COPY package*.json ./
-RUN npm install
+RUN npm install --include=dev
 
-# Копируем исходники (теперь `.dockerignore` защитит node_modules)
-COPY . .
+# БРОНЕБОЙНОЕ КОПИРОВАНИЕ: копируем только код, обходя node_modules
+COPY src ./src
+COPY prisma ./prisma
+COPY tsconfig*.json ./
 
-# Генерируем Prisma Client и собираем проект
+# Генерируем клиент и собираем
 RUN npm run prisma:generate
 RUN npm run build
 
