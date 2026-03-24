@@ -1,36 +1,44 @@
 import { useState } from 'react';
 import { User, Shield, Lock } from 'lucide-react';
 import { useAuth } from '@/src/app/providers/AuthProvider';
-import { useUsers } from '@/src/entities/user/model/queries';
 import {toast} from "sonner";
 
 export const AuthPage = () => {
-  const { data: users = [] } = useUsers();
   const { login } = useAuth();
 
   const [loginInput, setLoginInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
     if (!loginInput.trim() || !passwordInput.trim()) return;
-    
-    const user = users.find(u => u.login === loginInput.trim() && u.password === passwordInput.trim());
-    
-    if (!user) {
-      toast.error('Неверный логин или пароль');
-      return;
-    }
 
-    if (user.isBlocked) {
-      toast.error('Ваш аккаунт заблокирован. Обратитесь к администратору.');
-      return;
-    }
-    
-    login(user);
-  };
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          login: loginInput.trim(),
+          password: passwordInput.trim()
+        })
+      });
 
-  const handleAdminLogin = () => {
-    login({ id: 'admin', name: 'Администратор', role: 'admin' });
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        toast.error(data.message || 'Ошибка авторизации');
+        return;
+      }
+
+      login(data.user);
+    } catch (error) {
+      toast.error('Ошибка соединения с сервером');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -55,6 +63,7 @@ export const AuthPage = () => {
                 placeholder="Введите логин"
                 value={loginInput}
                 onChange={(e) => setLoginInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               />
             </div>
           </div>
@@ -69,16 +78,17 @@ export const AuthPage = () => {
                 placeholder="Введите пароль"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               />
             </div>
           </div>
 
           <button 
             onClick={handleLogin}
-            disabled={!loginInput.trim() || !passwordInput.trim()}
+            disabled={!loginInput.trim() || !passwordInput.trim() || isLoading}
             className="w-full bg-amber-600 text-white font-bold py-3 rounded-xl shadow-md hover:bg-amber-700 active:transform active:scale-95 transition disabled:opacity-50"
           >
-            Войти в систему
+            {isLoading ? 'Вход...' : 'Войти в систему'}
           </button>
         </div>
       </div>
