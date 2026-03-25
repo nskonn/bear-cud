@@ -1,4 +1,7 @@
 import prisma from '../../prisma/client';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-for-drevprom';
 
 export class AuthService {
     async login(login?: string, password?: string) {
@@ -18,7 +21,13 @@ export class AuthService {
             return { success: false, message: 'Ваш аккаунт заблокирован. Обратитесь к администратору.' };
         }
 
-        return { success: true, user };
+        const token = jwt.sign(
+            { userId: user.id, role: user.role },
+            JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+
+        return { success: true, user, token };
     }
 }
 

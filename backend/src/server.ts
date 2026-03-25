@@ -5,7 +5,6 @@ import express from "express";
 import cors from "cors";
 import apiRoutes from "./server/routes/index";
 import { roleService } from "./server/modules/roles/role.service";
-import { userService } from "./server/modules/users/user.service";
 
 
 const __filename = fileURLToPath(import.meta.url);

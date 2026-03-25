@@ -2,11 +2,27 @@ import { User, CatalogItem, WorkLog, Payout, Role } from '../types';
 
 const API_URL = '/api';
 
-async function fetchWithHandle(url: string, options?: RequestInit) {
-  const res = await fetch(url, options);
+async function fetchWithHandle(url: string, options: RequestInit = {}) {
+  const token = localStorage.getItem('token');
+
+  const headers = new Headers(options.headers || {});
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  const mergedOptions = {
+    ...options,
+    headers,
+  };
+
+  const res = await fetch(url, mergedOptions);
   if (!res.ok) {
+    if (res.status === 401) {
+      localStorage.removeItem('token');
+      window.dispatchEvent(new Event('unauthorized'));
+    }
     const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.error || `HTTP error! status: ${res.status}`);
+    throw new Error(errorData.error || errorData.message || `HTTP error! status: ${res.status}`);
   }
   return res.json();
 }
@@ -30,11 +46,7 @@ export const api = {
     });
   },
   deleteUser: async (id: string): Promise<void> => {
-    const res = await fetch(`${API_URL}/users/${id}`, { method: 'DELETE' });
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.error || `HTTP error! status: ${res.status}`);
-    }
+    await fetchWithHandle(`${API_URL}/users/${id}`, { method: 'DELETE' });
   },
 
   getCatalog: async (): Promise<CatalogItem[]> => {

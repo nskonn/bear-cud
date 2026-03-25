@@ -33,7 +33,7 @@ export const AuthPage = () => {
         return;
       }
 
-      login(data.user);
+      login(data.user, data.token);
     } catch (error) {
       toast.error('Ошибка соединения с сервером');
     } finally {
