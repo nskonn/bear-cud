@@ -2,28 +2,28 @@ import React, { useState } from 'react';
 import { ChevronLeft, Plus, CheckCircle, Pencil } from 'lucide-react';
 import { useFloating, autoUpdate, offset, flip, shift, useClick, useDismiss, useRole, useInteractions, FloatingPortal, size } from '@floating-ui/react';
 
-interface RoleSelectProps {
+interface PositionSelectProps {
     value: string;
-    onChange: (role: string) => void;
-    roles: string[];
-    onAddRole: (role: string) => void;
-    onEditRole: (oldRole: string, newRole: string) => void;
+    onChange: (position: string) => void;
+    positions: string[];
+    onAddPosition: (position: string) => void;
+    onEditPosition: (oldPosition: string, newPosition: string) => void;
 }
 
-export const RoleSelect = ({ value, onChange, roles, onAddRole, onEditRole }: RoleSelectProps) => {
+export const PositionSelect = ({ value, onChange, positions, onAddPosition, onEditPosition }: PositionSelectProps) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [editingRole, setEditingRole] = useState<string | null>(null);
-    const [editRoleValue, setEditRoleValue] = useState('');
-    const [isAddingRole, setIsAddingRole] = useState(false);
-    const [addRoleValue, setAddRoleValue] = useState('');
+    const [editingPosition, setEditingPosition] = useState<string | null>(null);
+    const [editPositionValue, setEditPositionValue] = useState('');
+    const [isAddingPosition, setIsAddingPosition] = useState(false);
+    const [addPositionValue, setAddPositionValue] = useState('');
 
     const { refs, floatingStyles, context } = useFloating({
         open: isOpen,
         onOpenChange: (open) => {
             setIsOpen(open);
             if (!open) {
-                setIsAddingRole(false);
-                setEditingRole(null);
+                setIsAddingPosition(false);
+                setEditingPosition(null);
             }
         },
         middleware: [
@@ -71,46 +71,46 @@ export const RoleSelect = ({ value, onChange, roles, onAddRole, onEditRole }: Ro
                         className="z-[9999] bg-white border border-stone-200 rounded-xl shadow-lg overflow-hidden flex flex-col max-h-64"
                     >
                         <div className="overflow-y-auto flex-1 p-1">
-                            {roles.map(r => (
-                                <div key={r} className="flex items-center justify-between px-3 py-2 hover:bg-stone-50 rounded-lg group transition-colors">
-                                    {editingRole === r ? (
+                            {positions.map(pos => (
+                                <div key={pos} className="flex items-center justify-between px-3 py-2 hover:bg-stone-50 rounded-lg group transition-colors">
+                                    {editingPosition === pos ? (
                                         <div className="flex w-full gap-2 items-center" onClick={e => e.stopPropagation()}>
                                             <input
                                                 autoFocus
                                                 className="flex-1 px-2 py-1 border border-amber-300 rounded-md focus:outline-none focus:border-amber-500 text-sm"
-                                                value={editRoleValue}
-                                                onChange={e => setEditRoleValue(e.target.value)}
+                                                value={editPositionValue}
+                                                onChange={e => setEditPositionValue(e.target.value)}
                                                 onKeyDown={e => {
                                                     if (e.key === 'Enter') {
                                                         e.preventDefault();
-                                                        onEditRole(r, editRoleValue);
-                                                        if(value === r) onChange(editRoleValue.trim() || value);
-                                                        setEditingRole(null);
+                                                        onEditPosition(pos, editPositionValue);
+                                                        if(value === pos) onChange(editPositionValue.trim() || value);
+                                                        setEditingPosition(null);
                                                     }
                                                 }}
                                             />
                                             <button type="button" onClick={(e) => {
                                                 e.stopPropagation();
-                                                onEditRole(r, editRoleValue);
-                                                if(value === r) onChange(editRoleValue.trim() || value);
-                                                setEditingRole(null);
+                                                onEditPosition(pos, editPositionValue);
+                                                if(value === pos) onChange(editPositionValue.trim() || value);
+                                                setEditingPosition(null);
                                             }} className="text-emerald-600 p-1 hover:bg-emerald-100 rounded-md transition"><CheckCircle size={18}/></button>
                                         </div>
                                     ) : (
                                         <>
                       <span
                           className="flex-1 cursor-pointer truncate text-sm font-medium text-stone-700"
-                          onClick={() => { onChange(r); setIsOpen(false); }}
+                          onClick={() => { onChange(pos); setIsOpen(false); }}
                       >
-                        {r}
+                        {pos}
                       </span>
                                             <button
                                                 type="button"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    setEditingRole(r);
-                                                    setEditRoleValue(r);
-                                                    setIsAddingRole(false);
+                                                    setEditingPosition(pos);
+                                                    setEditPositionValue(pos);
+                                                    setIsAddingPosition(false);
                                                 }}
                                                 className="text-stone-400 hover:text-amber-600 p-1 md:opacity-0 group-hover:opacity-100 transition"
                                             >
@@ -123,22 +123,22 @@ export const RoleSelect = ({ value, onChange, roles, onAddRole, onEditRole }: Ro
                         </div>
 
                         <div className="border-t border-stone-100 p-2 bg-stone-50">
-                            {isAddingRole ? (
+                            {isAddingPosition ? (
                                 <div className="flex gap-2 items-center" onClick={e => e.stopPropagation()}>
                                     <input
                                         autoFocus
                                         placeholder="Название..."
                                         className="flex-1 px-2 py-1.5 border border-amber-300 rounded-md focus:outline-none focus:border-amber-500 text-sm"
-                                        value={addRoleValue}
-                                        onChange={e => setAddRoleValue(e.target.value)}
+                                        value={addPositionValue}
+                                        onChange={e => setAddPositionValue(e.target.value)}
                                         onKeyDown={e => {
                                             if (e.key === 'Enter') {
                                                 e.preventDefault();
-                                                if(addRoleValue.trim()) {
-                                                    onAddRole(addRoleValue);
-                                                    onChange(addRoleValue.trim());
-                                                    setIsAddingRole(false);
-                                                    setAddRoleValue('');
+                                                if(addPositionValue.trim()) {
+                                                    onAddPosition(addPositionValue);
+                                                    onChange(addPositionValue.trim());
+                                                    setIsAddingPosition(false);
+                                                    setAddPositionValue('');
                                                     setIsOpen(false);
                                                 }
                                             }
@@ -148,11 +148,11 @@ export const RoleSelect = ({ value, onChange, roles, onAddRole, onEditRole }: Ro
                                         type="button"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            if(addRoleValue.trim()) {
-                                                onAddRole(addRoleValue);
-                                                onChange(addRoleValue.trim());
-                                                setIsAddingRole(false);
-                                                setAddRoleValue('');
+                                            if(addPositionValue.trim()) {
+                                                onAddPosition(addPositionValue);
+                                                onChange(addPositionValue.trim());
+                                                setIsAddingPosition(false);
+                                                setAddPositionValue('');
                                                 setIsOpen(false);
                                             }
                                         }}
@@ -166,9 +166,9 @@ export const RoleSelect = ({ value, onChange, roles, onAddRole, onEditRole }: Ro
                                     type="button"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        setIsAddingRole(true);
-                                        setEditingRole(null);
-                                        setAddRoleValue('');
+                                        setIsAddingPosition(true);
+                                        setEditingPosition(null);
+                                        setAddPositionValue('');
                                     }}
                                     className="w-full py-2 text-sm font-bold text-emerald-600 hover:bg-emerald-100 rounded-lg transition flex items-center justify-center"
                                 >

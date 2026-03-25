@@ -5,7 +5,7 @@
 ## Структура
 
 - `frontend/` содержит React-приложение на Vite и Tailwind. В режиме разработки оно проксирует запросы на `/api` к бекенду.
-- `backend/` содержит Express-сервер, Prisma и SQLite-подсистему. В режиме `NODE_ENV=production` он отдаёт собранный фронтенд из `../frontend/dist`.
+- `backend/` содержит Express-сервер, Prisma и PostgreSQL-подсистему. В режиме `NODE_ENV=production` он отдаёт собранный фронтенд из `../frontend/dist`.
 - `Dockerfile` и `docker-compose.yaml` собирают фронтенд-часть (и могут работать вместе с API-контейнером, если потребуется).
 
 ## Запуск локально
@@ -13,7 +13,7 @@
 ### Backend
 1. `cd backend`
 2. `npm install`
-3. Скопируйте `.env.example` в `.env` и, если нужно, новые значения (`DATABASE_URL`, `PORT`).
+3. Скопируйте `.env.example` в `.env`, заполните `DATABASE_URL` строкой PostgreSQL (`postgresql://user:password@host:5432/db`) и, при необходимости, `PORT`.
 4. `npm run dev`
 
 ### Frontend
@@ -28,7 +28,7 @@
 
 1. В `frontend` выполните `npm run build` — собранные файлы попадут в `frontend/dist`.
 2. В `backend` выполните `npm run build`, а после `NODE_ENV=production npm run start`. В этом режиме сервер отдаёт статику из `../frontend/dist` и обслуживает API.
-3. При необходимости используйте `backend/prisma` и `npm run prisma:push` для синхронизации схемы с базой.
+3. Для синхронизации схемы используйте Prisma (см. раздел ниже).
 
 ## Docker и деплой
 
@@ -38,10 +38,12 @@
 
 ## Prisma
 
-Схема лежит в `backend/prisma/schema.prisma` и использует SQL (`dev.db` внутри той же папки). Для миграций:
+Схема лежит в `backend/prisma/schema.prisma` и работает с PostgreSQL через `DATABASE_URL`. Процесс разработки:
 
 ```bash
 cd backend
 npx prisma generate
-npx prisma db push
+npx prisma migrate dev --name init         # создаст миграцию и применит её
 ```
+
+Для быстрых подтяжек схемы (без генерации миграции) можно использовать `npx prisma db push`, но он не записывает историю изменений.

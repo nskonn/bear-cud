@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { useUsers, useAddUser, useUpdateUser, useDeleteUser } from '@/src/entities/user/model/queries';
-import { useRoles, useAddRole, useUpdateRole  } from '@/src/entities/role/model/queries';
+import { usePositions, useAddPosition, useUpdatePosition } from '@/src/entities/position/model/queries';
 import { User } from '@/src/shared/types';
 import { Plus, Edit2, Trash2, Lock, Unlock, Save, X } from 'lucide-react';
-import {RoleSelect} from "@/src/shared/ui/RoleSelect.tsx";
+import { PositionSelect } from '@/src/shared/ui/PositionSelect.tsx';
 
 export const AdminWorkers = () => {
   const { data: users = [], isLoading } = useUsers();
-  const { data: roles = [] } = useRoles();
+  const { data: positions = [] } = usePositions();
   const { mutateAsync: addUser } = useAddUser();
   const { mutateAsync: updateUser } = useUpdateUser();
   const { mutateAsync: deleteUser } = useDeleteUser();
-  const { mutateAsync: addRole } = useAddRole();
-  const { mutateAsync: updateRole } = useUpdateRole();
+  const { mutateAsync: addPosition } = useAddPosition();
+  const { mutateAsync: updatePosition } = useUpdatePosition();
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -25,10 +25,13 @@ export const AdminWorkers = () => {
   };
 
   const handleSave = async () => {
-    if (!editForm.name || !editForm.role) return;
+    const isAdmin = editForm.role === 'admin';
+    if (!editForm.name || (!isAdmin && !editForm.position)) return;
 
     const payload = {
       ...editForm,
+      role: isAdmin ? 'admin' : 'worker',
+      position: isAdmin ? null : editForm.position || null,
       login: editForm.login?.trim() || null,
       password: editForm.password?.trim() || null,
       hourlyRate: editForm.hourlyRate ? Number(editForm.hourlyRate) : null,
@@ -77,11 +80,19 @@ export const AdminWorkers = () => {
     <div className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
       <div className="p-6 border-b border-stone-200 flex justify-between items-center bg-stone-50/50">
         <h2 className="text-xl font-bold text-stone-800">Работники</h2>
-        <button
+            <button
           onClick={() => {
             setIsAdding(true);
             setEditingId(null);
-            setEditForm({ name: '', role: roles[0] || '', login: '', password: '', isBlocked: false, hourlyRate: 0 });
+            setEditForm({
+              name: '',
+              role: 'worker',
+              position: positions[0] || '',
+              login: '',
+              password: '',
+              isBlocked: false,
+              hourlyRate: 0,
+            });
           }}
           disabled={isAdding}
           className="flex items-center px-4 py-2 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition disabled:opacity-50"
@@ -116,12 +127,12 @@ export const AdminWorkers = () => {
                   />
                 </td>
                 <td className="p-4">
-                  <RoleSelect
-                      value={editForm.role || ''}
-                      onChange={(role) => setEditForm({ ...editForm, role })}
-                      roles={roles}
-                      onAddRole={addRole}
-                      onEditRole={(oldRole, newRole) => updateRole({ oldRole, newRole })}
+                  <PositionSelect
+                      value={editForm.position || ''}
+                      onChange={(position) => setEditForm({ ...editForm, position })}
+                      positions={positions}
+                      onAddPosition={addPosition}
+                      onEditPosition={(oldPosition, newPosition) => updatePosition({ oldPosition, newPosition })}
                   />
                 </td>
                 <td className="p-4">
@@ -177,19 +188,19 @@ export const AdminWorkers = () => {
                       />
                     </td>
                     <td className="p-4">
-                      {user.role === 'admin' ? (
-                          <span className="px-2.5 py-1 bg-stone-800 text-white rounded-md text-sm border border-stone-700">
-                          Администратор
-                        </span>
-                      ) : (
-                          <RoleSelect
-                              value={editForm.role || ''}
-                              onChange={(role) => setEditForm({ ...editForm, role })}
-                              roles={roles}
-                              onAddRole={addRole}
-                              onEditRole={(oldRole, newRole) => updateRole({ oldRole, newRole })}
-                          />
-                      )}
+                    {user.role === 'admin' ? (
+                        <span className="px-2.5 py-1 bg-stone-800 text-white rounded-md text-sm border border-stone-700">
+                        Администратор
+                      </span>
+                    ) : (
+                        <PositionSelect
+                            value={editForm.position || ''}
+                            onChange={(position) => setEditForm({ ...editForm, position })}
+                            positions={positions}
+                            onAddPosition={addPosition}
+                            onEditPosition={(oldPosition, newPosition) => updatePosition({ oldPosition, newPosition })}
+                        />
+                    )}
                     </td>
                     <td className="p-4">
                       <input
@@ -236,7 +247,7 @@ export const AdminWorkers = () => {
                         </span>
                       ) : (
                       <span className="px-2.5 py-1 bg-stone-100 text-stone-700 rounded-md text-sm border border-stone-200">
-                        {user.role}
+                        {user.position || '—'}
                       </span>
                       )}
                     </td>

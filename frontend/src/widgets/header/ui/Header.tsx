@@ -16,7 +16,7 @@ export const Header = () => {
           <h1 className="font-bold text-lg">{isAdmin ? 'Панель управления' : currentUser.name}</h1>
           {!isAdmin && (
             <p className="text-amber-200 text-sm flex items-center">
-              <Briefcase size={14} className="mr-1" /> {currentUser.role}
+              <Briefcase size={14} className="mr-1" /> {currentUser.position || 'Работник'}
             </p>
           )}
         </div>

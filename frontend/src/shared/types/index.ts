@@ -1,9 +1,11 @@
-export type Role = 'Шлифовщик' | 'Сборщик' | 'Маляр' | 'admin' | string;
+export type Position = 'Упаковщик' | string;
+export type AccessRole = 'admin' | 'worker';
 
 export interface User {
   id: string;
   name: string;
-  role: Role;
+  role: AccessRole;
+  position?: Position | null;
   login?: string | null;
   password?: string | null;
   isBlocked?: boolean;
@@ -13,7 +15,7 @@ export interface User {
 export interface CatalogItem {
   id: string;
   name: string;
-  role: Role;
+  position: Position;
   standardHours: number;
 }
 

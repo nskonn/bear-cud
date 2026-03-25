@@ -16,3 +16,5 @@ echo "📦 Применение миграций базы данных Prisma...
 docker-compose exec backend npx prisma db push
 
 echo "✅ Деплой успешно завершен!"
+
+

@@ -14,11 +14,20 @@ export class UserController {
 
   async create(req: Request, res: Response) {
     try {
-      const { name, role, login, password, isBlocked, hourlyRate } = req.body;
-      if (!name || !role) {
-        return res.status(400).json({ error: 'Name and role are required' });
+      const { name, position, role, login, password, isBlocked, hourlyRate } = req.body;
+      if (!name) {
+        return res.status(400).json({ error: 'Name is required' });
       }
-      const user = await userService.createUser({ name, role, login, password, isBlocked, hourlyRate });
+      const normalizedRole = role === 'admin' ? role : 'worker';
+      const user = await userService.createUser({
+        name,
+        position: position || null,
+        role: normalizedRole,
+        login,
+        password,
+        isBlocked,
+        hourlyRate,
+      });
       res.status(201).json(user);
     } catch (error) {
       console.error('Error creating user:', error);
@@ -29,8 +38,17 @@ export class UserController {
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { name, role, login, password, isBlocked, hourlyRate } = req.body;
-      const user = await userService.updateUser(id, { name, role, login, password, isBlocked, hourlyRate });
+      const { name, position, role, login, password, isBlocked, hourlyRate } = req.body;
+      const normalizedRole = role === 'admin' ? role : 'worker';
+      const user = await userService.updateUser(id, {
+        name,
+        position: position ?? null,
+        role: normalizedRole,
+        login,
+        password,
+        isBlocked,
+        hourlyRate,
+      });
       res.json(user);
     } catch (error) {
       console.error('Error updating user:', error);

@@ -1,4 +1,4 @@
-import { User, CatalogItem, WorkLog, Payout, Role } from '../types';
+import { User, CatalogItem, WorkLog, Payout, Position } from '../types';
 
 const API_URL = '/api';
 
@@ -96,21 +96,21 @@ export const api = {
     });
   },
 
-  getRoles: async (): Promise<Role[]> => {
+  getPositions: async (): Promise<Position[]> => {
     return fetchWithHandle(`${API_URL}/roles`);
   },
-  addRole: async (role: Role): Promise<Role> => {
+  addPosition: async (position: Position): Promise<Position> => {
     return fetchWithHandle(`${API_URL}/roles`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: role }),
+      body: JSON.stringify({ name: position }),
     });
   },
-  updateRole: async (oldRole: Role, newRole: Role) => {
+  updatePosition: async (oldPosition: Position, newPosition: Position) => {
     return fetchWithHandle(`${API_URL}/roles`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ oldName: oldRole, newName: newRole }),
+      body: JSON.stringify({ oldName: oldPosition, newName: newPosition }),
     });
   }
 };

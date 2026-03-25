@@ -17,7 +17,7 @@ export const WorkerAddWork = ({ initialLog, onCancel, onSubmit }: WorkerAddWorkP
   const { mutateAsync: addWorkLog } = useAddWorkLog();
   const { mutateAsync: updateWorkLog } = useUpdateWorkLog();
 
-  const availableItems = useMemo(() => catalog.filter(item => item.role === currentUser?.role), [catalog, currentUser]);
+  const availableItems = useMemo(() => catalog.filter(item => item.position === currentUser?.position), [catalog, currentUser]);
   
   const [quantities, setQuantities] = useState<Record<string, number>>(() => {
     if (initialLog) {

@@ -106,7 +106,12 @@ export const WorkLogDetailsModal = ({ user, filter, colKey, workLogs, onClose }:
           <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6 bg-stone-50 p-4 rounded-xl border border-stone-100">
             <div>
               <p className="text-sm text-stone-500 mb-1 flex items-center"><UserIcon size={14} className="mr-1"/> Сотрудник</p>
-              <p className="font-bold text-stone-800 text-lg">{user.name} <span className="text-sm font-normal text-stone-500">({user.role})</span></p>
+              <p className="font-bold text-stone-800 text-lg">
+                {user.name}{' '}
+                <span className="text-sm font-normal text-stone-500">
+                  ({user.role === 'admin' ? 'Администратор' : user.position || 'Сотрудник'})
+                </span>
+              </p>
             </div>
             <div className="sm:text-right">
               <p className="text-sm text-stone-500 mb-1">Период</p>

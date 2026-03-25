@@ -28,7 +28,12 @@ export const PayoutModal = ({ user, onClose, onPayout }: PayoutModalProps) => {
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
             <p className="text-sm text-stone-500 mb-1">Сотрудник</p>
-            <p className="font-bold text-stone-800 text-lg">{user.name} <span className="text-sm font-normal text-stone-500">({user.role})</span></p>
+            <p className="font-bold text-stone-800 text-lg">
+              {user.name}{' '}
+              <span className="text-sm font-normal text-stone-500">
+                ({user.role === 'admin' ? 'Администратор' : user.position || 'Сотрудник'})
+              </span>
+            </p>
           </div>
 
           <div className="bg-stone-50 p-4 rounded-xl border border-stone-200 flex justify-between items-center">

@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { Plus, Pencil } from 'lucide-react';
 import { useCatalog, useAddCatalogItem, useUpdateCatalogItem } from '@/src/entities/catalog/model/queries';
-import { useRoles, useAddRole, useUpdateRole } from '@/src/entities/role/model/queries';
+import { usePositions, useAddPosition, useUpdatePosition } from '@/src/entities/position/model/queries';
 import { CatalogItemModal } from '@/src/features/catalog/ui/CatalogItemModal';
 import { CatalogItem } from '@/src/shared/types';
 
 export const AdminCatalog = () => {
   const { data: catalog = [] } = useCatalog();
-  const { data: roles = [] } = useRoles();
+  const { data: positions = [] } = usePositions();
   const { mutateAsync: addCatalogItem } = useAddCatalogItem();
   const { mutateAsync: updateCatalogItem } = useUpdateCatalogItem();
-  const { mutateAsync: addRole } = useAddRole();
-  const { mutateAsync: updateRole } = useUpdateRole();
+  const { mutateAsync: addPosition } = useAddPosition();
+  const { mutateAsync: updatePosition } = useUpdatePosition();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<CatalogItem | null>(null);
@@ -55,7 +55,7 @@ export const AdminCatalog = () => {
                   <td className="p-4 font-medium text-stone-800">{item.name}</td>
                   <td className="p-4 text-stone-600">
                     <span className="bg-stone-100 border border-stone-200 px-2 py-1 rounded-md text-xs font-medium">
-                      {item.role}
+                      {item.position}
                     </span>
                   </td>
                   <td className="p-4 text-right font-bold text-amber-700 whitespace-nowrap">{item.standardHours} ч</td>
@@ -81,18 +81,18 @@ export const AdminCatalog = () => {
       </div>
 
       {isModalOpen && (
-        <CatalogItemModal 
-          initialItem={editingItem} 
-          roles={roles}
-          onClose={() => setIsModalOpen(false)} 
-          onSave={async (data) => {
-            if (editingItem) await updateCatalogItem({ id: editingItem.id, item: data });
-            else await addCatalogItem(data);
-            setIsModalOpen(false);
-          }} 
-          onAddRole={addRole}
-          onEditRole={(oldRole, newRole) => updateRole({ oldRole, newRole })}
-        />
+      <CatalogItemModal
+        initialItem={editingItem}
+        positions={positions}
+        onClose={() => setIsModalOpen(false)}
+        onSave={async (data) => {
+          if (editingItem) await updateCatalogItem({ id: editingItem.id, item: data });
+          else await addCatalogItem(data);
+          setIsModalOpen(false);
+        }}
+        onAddPosition={addPosition}
+        onEditPosition={(oldPosition, newPosition) => updatePosition({ oldPosition, newPosition })}
+      />
       )}
     </section>
   );

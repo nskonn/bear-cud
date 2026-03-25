@@ -7,13 +7,13 @@ export class CatalogService {
     });
   }
 
-  async createItem(data: { name: string; role: string; standardHours: number }) {
+  async createItem(data: { name: string; position: string; standardHours: number }) {
     return prisma.catalogItem.create({
       data,
     });
   }
 
-  async updateItem(id: string, data: { name?: string; role?: string; standardHours?: number }) {
+  async updateItem(id: string, data: { name?: string; position?: string; standardHours?: number }) {
     return prisma.catalogItem.update({
       where: { id },
       data,

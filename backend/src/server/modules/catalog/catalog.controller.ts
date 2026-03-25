@@ -14,11 +14,11 @@ export class CatalogController {
 
   async create(req: Request, res: Response) {
     try {
-      const { name, role, standardHours } = req.body;
-      if (!name || !role || typeof standardHours !== 'number') {
+      const { name, position, standardHours } = req.body;
+      if (!name || !position || typeof standardHours !== 'number') {
         return res.status(400).json({ error: 'Invalid data' });
       }
-      const item = await catalogService.createItem({ name, role, standardHours });
+      const item = await catalogService.createItem({ name, position, standardHours });
       res.status(201).json(item);
     } catch (error) {
       console.error('Error creating catalog item:', error);
@@ -29,8 +29,8 @@ export class CatalogController {
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { name, role, standardHours } = req.body;
-      const item = await catalogService.updateItem(id, { name, role, standardHours });
+      const { name, position, standardHours } = req.body;
+      const item = await catalogService.updateItem(id, { name, position, standardHours });
       res.json(item);
     } catch (error) {
       console.error('Error updating catalog item:', error);

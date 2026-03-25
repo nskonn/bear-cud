@@ -1,26 +1,33 @@
 import React, { useState } from 'react';
 import { Settings } from 'lucide-react';
 import { CatalogItem } from '@/shared/types';
-import {RoleSelect} from "@/src/shared/ui/RoleSelect.tsx";
+import { PositionSelect } from '@/src/shared/ui/PositionSelect.tsx';
 
 interface CatalogItemModalProps {
   initialItem: CatalogItem | null;
-  roles: string[];
+  positions: string[];
   onClose: () => void;
   onSave: (data: Omit<CatalogItem, 'id'>) => void;
-  onAddRole: (role: string) => void;
-  onEditRole: (oldRole: string, newRole: string) => void;
+  onAddPosition: (position: string) => void;
+  onEditPosition: (oldPosition: string, newPosition: string) => void;
 }
 
-export const CatalogItemModal = ({ initialItem, roles, onClose, onSave, onAddRole, onEditRole }: CatalogItemModalProps) => {
+export const CatalogItemModal = ({
+  initialItem,
+  positions,
+  onClose,
+  onSave,
+  onAddPosition,
+  onEditPosition,
+}: CatalogItemModalProps) => {
   const [name, setName] = useState(initialItem ? initialItem.name : '');
-  const [role, setRole] = useState(initialItem ? initialItem.role : roles[0] || '');
+  const [position, setPosition] = useState(initialItem ? initialItem.position : positions[0] || '');
   const [standardHours, setStandardHours] = useState(initialItem ? initialItem.standardHours.toString() : '');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name.trim() && Number(standardHours) > 0 && role) {
-      onSave({ name: name.trim(), role, standardHours: parseFloat(standardHours) });
+    if (name.trim() && Number(standardHours) > 0 && position) {
+      onSave({ name: name.trim(), position, standardHours: parseFloat(standardHours) });
     }
   };
 
@@ -48,12 +55,12 @@ export const CatalogItemModal = ({ initialItem, roles, onClose, onSave, onAddRol
           
           <div className="relative">
             <label className="block text-sm font-medium text-stone-600 mb-1">Кому доступно (Специальность)</label>
-            <RoleSelect
-                value={role}
-                onChange={setRole}
-                roles={roles}
-                onAddRole={onAddRole}
-                onEditRole={onEditRole}
+            <PositionSelect
+                value={position}
+                onChange={setPosition}
+                positions={positions}
+                onAddPosition={onAddPosition}
+                onEditPosition={onEditPosition}
             />
           </div>
 

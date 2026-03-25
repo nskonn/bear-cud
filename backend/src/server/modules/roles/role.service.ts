@@ -24,16 +24,16 @@ export class RoleService {
         data: { name: newName },
       });
 
-      // 2. Update all users with this role
+      // 2. Обновляем должность у пользователей
       await tx.user.updateMany({
-        where: { role: oldName },
-        data: { role: newName },
+        where: { position: oldName },
+        data: { position: newName },
       });
 
-      // 3. Update all catalog items with this role
+      // 3. Обновляем должность в справочнике
       await tx.catalogItem.updateMany({
-        where: { role: oldName },
-        data: { role: newName },
+        where: { position: oldName },
+        data: { position: newName },
       });
 
       return newName;
@@ -42,34 +42,32 @@ export class RoleService {
 
   async seedDefaultRoles() {
     try {
-      // 1. Определяем список необходимых ролей
-      // Добавляем 'admin' в общий список, чтобы роль существовала в базе
-      const defaultRoles = ['Швея', 'Закройщик', 'Упаковщик', 'admin'];
+      const defaultRoles = ['Упаковщик',];
 
       for (const name of defaultRoles) {
         await prisma.role.upsert({
-          where: { name: name }, // Ищем по уникальному имени [cite: 1]
-          update: {},           // Если найдено — ничего не меняем
-          create: { name: name }, // Если не найдено — создаем [cite: 1]
+          where: { name },
+          update: {},
+          create: { name },
         });
       }
-
-      // 2. Создаем или обновляем администратора
-
+console.log(adminLogin, 'adminLogin')
+console.log(adminPassword, 'adminPassword')
       await prisma.user.upsert({
-        where: { login: adminLogin }, // Проверка по уникальному полю login
-        update: {}, // Если админ уже есть, не перезаписываем его (чтобы не сбросить измененный пароль)
+        where: { login: adminLogin },
+        update: {},
         create: {
           name: 'Администратор',
           login: adminLogin,
           password: adminPassword,
           role: 'admin',
+          position: null,
           isBlocked: false,
-          hourlyRate: 0
+          hourlyRate: 0,
         },
       });
 
-      console.log('✅ Роли и администратор успешно проверены/созданы');
+      console.log('✅ Роли/должности и администратор успешно проверены/созданы');
     } catch (error) {
       console.error('❌ Ошибка при сидинге базы данных:', error);
     }

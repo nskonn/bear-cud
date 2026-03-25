@@ -29,6 +29,8 @@ services:
             PORT: 4000
         ports:
             - "4000:4000"
+        env_file:
+            - ./backend/.env
 
     frontend:
         build:
