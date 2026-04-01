@@ -71,7 +71,15 @@ export const WorkerAddWork = ({ initialLog, onCancel, onSubmit }: WorkerAddWorkP
       const validExpenses = expenses.filter(e => e.name.trim() && e.amount > 0).map(e => ({ name: e.name, amount: e.amount }));
       
       if (initialLog) {
-        await updateWorkLog({ id: initialLog.id, log: { items: logItems, expenses: validExpenses, totalEarned } });
+        await updateWorkLog({
+          id: initialLog.id,
+          log: { 
+            date: initialLog.date,
+            items: logItems,
+            expenses: validExpenses,
+            totalEarned 
+          }
+        });
       } else {
         await addWorkLog({
           userId: currentUser!.id,
