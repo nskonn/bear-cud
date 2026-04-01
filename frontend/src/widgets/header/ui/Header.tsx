@@ -1,5 +1,6 @@
 import { LogOut, Briefcase, Shield } from 'lucide-react';
 import { useAuth } from '@/src/app/providers/AuthProvider';
+import logo from '@/src/assets/logo.png';
 
 export const Header = () => {
   const { currentUser, logout } = useAuth();
@@ -27,7 +28,8 @@ export const Header = () => {
 
   return (
     <header className={`${isAdmin ? 'bg-stone-900' : 'bg-amber-700'} text-white p-4 shadow-md sticky top-0 z-10 flex justify-between items-center`}>
-      <div className="flex items-center">
+      <div className="flex items-center gap-3">
+        <img src={logo} alt="Bear cud logo" className="h-10 w-10 rounded-full object-cover" />
         {isAdmin && <Shield size={24} className="text-amber-500 mr-2" />}
         <div>
           <h1 className="font-bold text-lg">{isAdmin ? 'Панель управления' : currentUser.name}</h1>

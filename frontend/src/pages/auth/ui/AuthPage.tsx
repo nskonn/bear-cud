@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { User, Shield, Lock } from 'lucide-react';
+import { User, Lock } from 'lucide-react';
 import { useAuth } from '@/src/app/providers/AuthProvider';
 import { toast } from 'sonner';
+import logo from '@/src/assets/logo.png';
 
 type TelegramInitPayload = {
   id: string;
@@ -130,8 +131,8 @@ export const AuthPage = () => {
     <div className="min-h-screen bg-stone-100 flex flex-col items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden">
         <div className="bg-amber-700 p-6 text-center">
-          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 text-amber-700 shadow-inner">
-            <Shield size={32} />
+          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 text-amber-700 shadow-inner overflow-hidden">
+            <img src={logo} alt="Bear cud logo" className="h-13 w-13 rounded-full object-cover" />
           </div>
           <h1 className="text-2xl font-bold text-white">Bear cud</h1>
           <p className="text-amber-200 text-sm mt-1">Система учета выработки</p>
