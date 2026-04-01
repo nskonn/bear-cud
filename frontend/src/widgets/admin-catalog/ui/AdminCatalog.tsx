@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Plus, Pencil } from 'lucide-react';
 import { useCatalog, useAddCatalogItem, useUpdateCatalogItem } from '@/src/entities/catalog/model/queries';
 import { usePositions, useAddPosition, useUpdatePosition } from '@/src/entities/position/model/queries';
@@ -15,6 +15,21 @@ export const AdminCatalog = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<CatalogItem | null>(null);
+  const [nameSearch, setNameSearch] = useState('');
+  const [positionSearch, setPositionSearch] = useState('');
+
+  const displayedCatalog = useMemo(() => {
+    const normalizedNameQuery = nameSearch.trim().toLocaleLowerCase('ru-RU');
+    const normalizedPositionQuery = positionSearch.trim().toLocaleLowerCase('ru-RU');
+    return [...catalog]
+      .sort((a, b) => a.name.localeCompare(b.name, 'ru-RU'))
+      .filter(item =>
+        (normalizedNameQuery ? item.name.toLocaleLowerCase('ru-RU').includes(normalizedNameQuery) : true) &&
+        (normalizedPositionQuery
+          ? item.position.toLocaleLowerCase('ru-RU').includes(normalizedPositionQuery)
+          : true),
+      );
+  }, [catalog, nameSearch, positionSearch]);
 
   const openAdd = () => {
     setEditingItem(null);
@@ -39,6 +54,22 @@ export const AdminCatalog = () => {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+        <div className="border-b border-stone-200 bg-stone-50/60 p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+          <input
+            type="text"
+            value={nameSearch}
+            onChange={(e) => setNameSearch(e.target.value)}
+            placeholder="Поиск по названию..."
+            className="w-full rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/30"
+          />
+          <input
+            type="text"
+            value={positionSearch}
+            onChange={(e) => setPositionSearch(e.target.value)}
+            placeholder="Поиск по должности..."
+            className="w-full rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/30"
+          />
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -50,7 +81,7 @@ export const AdminCatalog = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100">
-              {catalog.map(item => (
+              {displayedCatalog.map(item => (
                 <tr key={item.id} className="hover:bg-stone-50 transition">
                   <td className="p-4 font-medium text-stone-800">{item.name}</td>
                   <td className="p-4 text-stone-600">
@@ -70,9 +101,11 @@ export const AdminCatalog = () => {
                   </td>
                 </tr>
               ))}
-              {catalog.length === 0 && (
+              {displayedCatalog.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-stone-500">Справочник пуст</td>
+                  <td colSpan={4} className="p-8 text-center text-stone-500">
+                    {catalog.length === 0 ? 'Справочник пуст' : 'По вашему запросу ничего не найдено'}
+                  </td>
                 </tr>
               )}
             </tbody>
