@@ -7,6 +7,23 @@ export const Header = () => {
   if (!currentUser) return null;
 
   const isAdmin = currentUser.role === 'admin';
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        await fetch('/api/auth/telegram-unlink', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Failed to unlink Telegram data on logout', error);
+    } finally {
+      logout();
+    }
+  };
 
   return (
     <header className={`${isAdmin ? 'bg-stone-900' : 'bg-amber-700'} text-white p-4 shadow-md sticky top-0 z-10 flex justify-between items-center`}>
@@ -21,7 +38,7 @@ export const Header = () => {
           )}
         </div>
       </div>
-      <button onClick={logout} className={`p-2 ${isAdmin ? 'bg-stone-800 hover:bg-stone-700' : 'bg-amber-800 hover:bg-amber-900'} rounded-full transition`}>
+      <button onClick={handleLogout} className={`p-2 ${isAdmin ? 'bg-stone-800 hover:bg-stone-700' : 'bg-amber-800 hover:bg-amber-900'} rounded-full transition`}>
         <LogOut size={20} />
       </button>
     </header>

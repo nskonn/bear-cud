@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { authService } from './auth.service';
 import {AuthRequest} from "./auth.middleware";
+import { userService } from '../users/user.service';
 
 class AuthController {
     async login(req: Request, res: Response) {
@@ -37,6 +38,19 @@ class AuthController {
             return res.status(401).json({ success: false, message: 'Пользователь не найден' });
         }
         res.json({ success: true, user: req.user });
+    }
+
+    async telegramUnlink(req: AuthRequest, res: Response) {
+        try {
+            if (!req.user?.id) {
+                return res.status(401).json({ success: false, message: 'Пользователь не найден' });
+            }
+            await userService.clearTelegramData(req.user.id);
+            res.json({ success: true });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false, message: 'Internal server error' });
+        }
     }
 }
 

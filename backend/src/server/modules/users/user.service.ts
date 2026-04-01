@@ -68,6 +68,18 @@ export class UserService {
       data,
     });
   }
+
+  async clearTelegramData(id: string) {
+    return prisma.user.update({
+      where: { id },
+      data: {
+        telegramId: null,
+        telegramFirstName: null,
+        telegramLastName: null,
+        telegramUsername: null,
+      },
+    });
+  }
 }
 
 export const userService = new UserService();
