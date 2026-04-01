@@ -51,8 +51,7 @@ export class RoleService {
           create: { name },
         });
       }
-console.log(adminLogin, 'adminLogin')
-console.log(adminPassword, 'adminPassword')
+
       await prisma.user.upsert({
         where: { login: adminLogin },
         update: {},

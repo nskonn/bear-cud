@@ -5,15 +5,30 @@ import {AuthRequest} from "./auth.middleware";
 class AuthController {
     async login(req: Request, res: Response) {
         try {
-            const { login, password } = req.body;
-            const result = await authService.login(login, password);
+            const { login, password, telegram } = req.body;
+            const result = await authService.login(login, password, telegram);
             if (result.success) {
                 res.json(result);
             } else {
                 res.status(401).json(result);
             }
         } catch (error) {
+            console.error(error);
             res.status(500).json({ success: false, message: 'Internal server error' });
+        }
+    }
+
+    async telegramInit(req: Request, res: Response) {
+        try {
+            const { initData } = req.body;
+            if (!initData) {
+                return res.status(400).json({ success: false, message: 'Missing initData' });
+            }
+            const result = await authService.telegramInit(initData);
+            res.json(result);
+        } catch (error) {
+            console.error(error);
+            res.status(401).json({ success: false, message: error instanceof Error ? error.message : 'Invalid telegram data' });
         }
     }
 

@@ -6,6 +6,9 @@ export interface User {
   name: string;
   role: AccessRole;
   position?: Position | null;
+  telegramId?: string | null;
+  telegramFirstName?: string | null;
+  telegramLastName?: string | null;
   login?: string | null;
   password?: string | null;
   isBlocked?: boolean;

@@ -24,6 +24,10 @@ model User {
   name       String
   role       RoleType  @default(worker)
   position   String?
+  telegramId String?   @unique
+  telegramFirstName String?
+  telegramLastName String?
+  telegramUsername String?
   login      String?   @unique
   password   String?
   isBlocked  Boolean   @default(false)
